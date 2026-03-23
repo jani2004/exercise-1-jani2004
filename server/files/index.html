@@ -6,20 +6,80 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Movies!</title>
     <style>
-        /* Part 3: Your styling goes here */
+        body{
+            font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+            font-size: larger;
+        }
+        img{
+            border-radius: 0cap;
+        }
+        h1{
+            font-weight: 200;
+            margin: auto;
+        }
+        article{
+            background-color: beige;
+            border-radius: 5%;
+            margin-bottom: 2%;
+            box-shadow: black;
+            padding: 5%;
+            max-width: 1;
+        }
     </style>
     <script>
-        function reverseString(s) {
-            return s.split("").reverse().join("");
-        }
-
         window.onload = function () {
             const xhr = new XMLHttpRequest()
             xhr.onload = function () {
                 const bodyElement = document.querySelector("body")
                 if (xhr.status == 200) {
-		            /* Part 2: Build the HTML elements here and append them to the body */ 
-                    bodyElement.append(reverseString(xhr.responseText))
+                  const movies = JSON.parse(xhr.responseText);
+
+                movies.forEach(element => {
+                    const article = document.createElement("article");
+
+                    article.innerHTML = `
+                    <h1>${element.Title}</h1>
+                    <img src="${element.Poster}" width="150">
+
+                    <p><strong>Released:</strong> ${element.Released}</p>
+                    <p><strong>Runtime:</strong> ${Math.floor(element.Runtime / 60)}h ${element.Runtime % 60}min</p>
+                    <p>${element.Plot}</p>
+
+                    <section>
+                    <h2>Genres</h2>
+                        <ul>
+                            ${element.Genres.map(g => `<li>${g}</li>`).join("")}
+                        </ul>
+                    </section>
+
+                    <section>
+                    <h2>Directors</h2>
+                        <ul>
+                            ${element.Directors.map(d => `<li>${d}</li>`).join("")}
+                        </ul>
+                    </section>
+
+                    <section>
+                    <h2>Writers</h2>
+                        <ul>
+                            ${element.Writers.map(w => `<li>${w}</li>`).join("")}
+                        </ul>
+                    </section>
+
+                    <section>
+                    <h2>Actors</h2>
+                        <ul>
+                            ${element.Actors.map(a => `<li>${a}</li>`).join("")}
+                        </ul>
+                    </section>
+
+                    <p><strong>Metascore:</strong> ${element.Metascore}</p>
+                    <p><strong>IMDb Rating:</strong> ${element.imdbRating}</p>
+                    <hr>
+                `;
+
+                    bodyElement.append(article);
+                });
                 } else {
                     bodyElement.append("Daten konnten nicht geladen werden, Status " + xhr.status + " - " + xhr.statusText)
                 }
